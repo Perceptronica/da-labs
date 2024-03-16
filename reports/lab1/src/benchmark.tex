@@ -1,0 +1,39 @@
+ 
+\section{Тест производительности}
+
+Тест производительности представляет из себя следующее: сравнение написанной мной radix-сортировки и std::stable\_sort(), работающей за $O(N*log(n))$ (при условии доступности дополнительной памяти).
+
+Тесты состоят из $10$ (тесты 0-1), $10^6$ (тест 2), $10^7$ (тест 3) и $10^8$ (тест 4) строк вида "ключ значение".
+
+\begin{alltt}
+	[anton@home lab1]$ make
+	g++ main.cpp -o main
+	g++ sort.cpp -o sort
+	[anton@home lab1]$ ./main <  tests/test0.txt
+	[RADIX] Sorted in 3 microseconds.
+	[anton@home lab1]$ ./sort <  tests/test0.txt
+	[CPP_SORT] Sorted in 3 microseconds.
+	[anton@home lab1]$ ./main <  tests/test1.txt
+	[RADIX] Sorted in 4 microseconds.
+	[anton@home lab1]$ ./sort <  tests/test1.txt
+	[CPP_SORT] Sorted in 3 microseconds.
+	[anton@home lab1]$ ./main <  tests/test2.txt
+	[RADIX] Sorted in 1371239 microseconds.
+	[anton@home lab1]$ ./sort <  tests/test2.txt
+	[CPP_SORT] Sorted in 1090689 microseconds.
+	[anton@home lab1]$ ./main <  tests/test3.txt
+	[RADIX] Sorted in 15232532 microseconds.
+	[anton@home lab1]$ ./sort <  tests/test3.txt
+	[CPP_SORT] Sorted in 13666058 microseconds.
+	[anton@home lab1]$ ./main <  tests/test4.txt
+	[RADIX] Sorted in 160521969 microseconds.
+	[anton@home lab1]$ ./sort <  tests/test4.txt
+	[CPP_SORT] Sorted in 185347382 microseconds.
+\end{alltt}
+
+Видно, что stable\_sort() выигрывает у radix-сортировки в большинстве случаев. Я думаю, что это происходит из-за того, что в случае поразрядной сортировки мы вынуждены выполнить несколько проходов по всем символам строки и требует дополнительной памяти для хранения временных данных. Также цикл присваивания элементов (строки 44-46) замедляет работу программы, что проявляется на большом объеме входных данных (применим std::vector::swap). 
+
+Файл для проведения теста №4 весил около 5 Гб. Несмотря на то, что поразрядная сортировка проработала эффективнее на 15\% по времени, программа потратила примерно на 7 Гб ОЗУ больше, чем программа с stable\_sort().
+
+stable\_sort() может работать быстрее и эффективнее для сортировки строк в большинстве случаев.
+\pagebreak

@@ -41,16 +41,16 @@ void RadixSort(vector<Item>& A, vector<Item>& B) {
     int maxLength = 32;
     for (int i = maxLength - 1; i >= 0; i--) {
         CountingSort(A, B, i);
-        for (size_t j = 0; j < A.size(); ++j) {
-            A[j] = B[j];
-        }
+        A.swap(B);
+    }
+    if (maxLength % 2 == 0) {
+        A.swap(B);
     }
 }
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(0);
-    cout.tie(0);
 
     vector<Item> v;
     Item curr;
@@ -60,12 +60,12 @@ int main() {
     }
 
     vector<Item> result(v.size());
+
     RadixSort(v, result);
-    
+
     for (size_t i = 0; i < result.size(); ++i) {
         cout << result[i].key << '\t' << result[i].val << '\n';
     }
-    
     return 0;
 }
 
