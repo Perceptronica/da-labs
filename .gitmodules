@@ -1,0 +1,3 @@
+[submodule "course-project-FFT/minimp3"]
+	path = course-project-FFT/minimp3
+	url = https://github.com/lieff/minimp3.git
