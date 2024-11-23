@@ -1,0 +1,89 @@
+\section{Описание}
+Алгоритмы, предназначенные для решения задач оптимизации, - обычно последовательность шагов, на каждом из которых предоставляется некоторое множество вывборов. Жадный алгоитм - тот, который выбирает самый лучший выбор на данный момент.
+
+Переформулируем задачу так: дана линейная система линейных уравнений (количество уравнений не превышает количество переменных). Требуется найти все уравнения, которые могли бы позволить определить значения переменных и при этом оптимизировать общубю стоимость.
+
+Основная часть алгоритма - применение метода Гаусса (приведение матрицы к ступенчатому виду). На каждом шаге выбираем строку матрицы с минимальной стоимостью; если в какой-то клетке матрицы возникает 0, решения нет - выводим -1.
+
+Если шаг пройден успешно, то выведем индексы строк матрицы в возрастающем порядке.
+\pagebreak
+
+\section{Исходный код}
+Реализуем алгоритм, описанный в предыдущем пункте.
+
+Опишем основной шаг алгоритма - метод Гаусса:
+\begin{enumerate}
+	\item ищем минимальную строку по стоимости такую, что элемент по диагонали (по текущему $i$) ненулевой. Если такой строки нет, решения нет;
+	\item меняем местами рассматриваемую и найденную строку;
+	\item преобразуем к ступенчатому виду строки по текущему pivot-элементу.
+\end{enumerate}
+
+\begin{lstlisting}[language=C++]
+#include <bits/stdc++.h>
+
+using namespace std;
+
+using vd = vector<double>;
+using vi = vector<int>;
+
+int main() {
+	ios::sync_with_stdio(false);
+	cin.tie(nullptr);
+	
+	int m, n;
+	cin >> m >> n;
+	vector<vd> v(m, vd(n + 2, 0));
+	for (size_t i = 0; i < m; ++i) {
+		for (size_t j = 0; j < n + 1; ++j) {
+			cin >> v[i][j];
+		}
+		v[i][n + 1] = i + 1;
+	}
+	
+	vi min_v;
+	for (size_t i = 0; i < n; ++i) {
+		int min_cost = INT32_MAX;
+		int row = INT32_MIN;
+		for (size_t j = i; j < m; ++j) {
+			if (v[j][i] != 0 && v[j][n] < min_cost) {
+				min_cost = static_cast<int>(v[j][n]);
+				row = j;
+			}
+		}
+		if (row == INT32_MIN) { 
+			cout << "-1\n"; 
+			return 0; 
+		}
+		swap(v[i], v[row]);
+		min_v.push_back(v[i][n + 1]);
+		for (size_t j = i + 1; j < m; ++j) {
+			double pivot = v[j][i] / v[i][i];
+			for (size_t p = 1; p < n; ++p) {
+				v[j][p] -= v[i][p] * pivot;
+			}
+		}
+	}
+	sort(min_v.begin(), min_v.end());
+	for (const auto& elem : min_v) {
+		cout << elem << " ";
+	}
+	cout << "\n";
+}	
+\end{lstlisting}
+
+
+\pagebreak
+
+\section{Консоль}
+\begin{alltt}
+	[anton@home lab8-greedy]$ make
+	g++ -O2 -lm -fno-stack-limit -std=c++20 -x c++ solution.cpp -o executable
+	[anton@home lab8-greedy]$ ./executable 
+	3 3
+	1 0 2 3
+	1 0 2 4
+	2 0 1 2
+	-1
+	
+\end{alltt}
+\pagebreak

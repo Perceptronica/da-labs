@@ -1,0 +1,21 @@
+ 
+\section{Тест производительности}
+
+Тест производительности представляет из себя следующее: сравнение написанного мной алгоритма за $O(n^2)$ и наивного алгоритма за $O(2^n)$.
+
+\begin{alltt}
+	[anton@home lab7-dp]$ make
+	g++ main.cpp -o main
+	g++ naive.cpp -o naive
+	[anton@home lab7-dp]$ ./main <  tests/test0.txt
+	[DP] Done in 2013 microseconds.
+	[anton@home lab7-dp]$ ./naive <  tests/test0.txt
+	[NAIVE] Done in 3497 microseconds.
+	[anton@home lab7-dp]$ ./main <  tests/test1.txt
+	[DP] Done in 2822 microseconds.
+	[anton@home lab7-dp]$ ./naive <  tests/test1.txt
+	[NAIVE] Done in 2409338 microseconds.
+\end{alltt}
+
+Видно, что ДП-алгоритм выигрывает у наивного при увеличении длины строки в несколько тысяч раз, несмотря на большее потребление памяти.
+\pagebreak
