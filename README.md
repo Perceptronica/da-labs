@@ -25,6 +25,9 @@
     │       ├── src.tex
     │       ├── thoughts.tex
     │       └── titlepage.tex
+    └── styles
+        └── log-style.sty
+
 ```
 
 - labx-* - исходный код лабораторной работы + makefile для более удобной работы с задачей;
