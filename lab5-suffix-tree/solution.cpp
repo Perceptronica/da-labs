@@ -44,8 +44,7 @@ struct STree {
     ++remainder;
     while (remainder > 0) {
       activeEdge = (activeLength == 0) ? i : activeEdge;
-      std::map<char, Node *>::iterator it =
-          activeNode->to.find(*activeEdge);
+      std::map<char, Node *>::iterator it = activeNode->to.find(*activeEdge);
       Node *next;
       if (it == activeNode->to.end()) {
         Node *leaf = new Node(i, text.end());
