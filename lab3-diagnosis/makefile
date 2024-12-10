@@ -10,5 +10,5 @@ valgrind:
 	make
 	make run
 	valgrind ./executable
-clear:
+clean:
 	rm executable test.out gprof.out gmon.out

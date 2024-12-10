@@ -9,8 +9,8 @@ using bit_t = int32_t;
 using stype = string;
 using vtype = uint64_t;
 using key = pair<stype, vtype>;
-using nptr = Node*;
-using tptr = Trie*;
+using nptr = Node *;
+using tptr = Trie *;
 
 const bit_t MAX_LEN_KEY = 257;
 const bit_t BIT_COUNT = 5;
@@ -18,8 +18,8 @@ const bit_t BIT_COUNT = 5;
 struct Node {
   key k;
   bit_t bit;
-  Node* l;
-  Node* r;
+  Node *l;
+  Node *r;
   vtype num;
 
   Node() {
@@ -51,7 +51,7 @@ struct Node {
   };
 };
 
-bool get_bit(stype& key, bit_t bit_id) {
+bool get_bit(stype &key, bit_t bit_id) {
   bit_t byte_n = bit_id / 8;
   bit_t bit_n = bit_id % 8;
   bit_t symbol;
@@ -63,7 +63,7 @@ bool get_bit(stype& key, bit_t bit_id) {
   return (symbol & (128 >> bit_n)) != 0;
 }
 
-bit_t leftmost_bit(stype& key1, stype& key2) {
+bit_t leftmost_bit(stype &key1, stype &key2) {
   bit_t i = 0;
   bit_t max_sz = max(key1.size(), key2.size());
   while (key1[i] == key2[i]) {
@@ -96,7 +96,7 @@ struct Trie {
     }
   }
 
-  nptr search(stype& k) {
+  nptr search(stype &k) {
     if (header == nullptr) {
       cout << "NoSuchWord\n";
       return nullptr;
@@ -158,12 +158,12 @@ struct Trie {
     }
   }
 
-  bool remove(stype& k) {
+  bool remove(stype &k) {
     if (header == nullptr) {
       cout << "NoSuchWord\n";
       return false;
     }
-    if (header->l == header) {  // header is an only node
+    if (header->l == header) { // header is an only node
       if (header->k.first.compare(k) == 0) {
         delete header;
         header = nullptr;
@@ -220,7 +220,7 @@ struct Trie {
     return true;
   }
 
-  int save(stype& filename) {
+  int save(stype &filename) {
     ofstream file;
     file.open(filename, std::ios_base::binary | std::ios_base::out);
     if (this->header == nullptr) {
@@ -251,7 +251,7 @@ struct Trie {
     }
   }
 
-  int saveR(nptr node, std::ofstream& file) {
+  int saveR(nptr node, std::ofstream &file) {
     if (!(file << node->k.first)) {
       return -1;
     }
@@ -341,7 +341,7 @@ struct Trie {
   }
 };
 
-void to_lowercase(stype& s) {
+void to_lowercase(stype &s) {
   for (size_t i = 0; s[i] != '\0'; ++i) {
     if (s[i] >= 'A' && s[i] <= 'Z') {
       s[i] = s[i] - 'A' + 'a';

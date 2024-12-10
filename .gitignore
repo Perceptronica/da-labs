@@ -31,3 +31,5 @@
 *.acn
 *.bcf
 *.run.xml
+
+executable
