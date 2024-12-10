@@ -1,9 +1,6 @@
 ## Лабораторные работы по дискретному анализу ##
 
-### Варианты ###
-## Advent of Code 2024 ##
-
-|Номер ЛР|Тема|Вариант|Решение|Отчет|
+|№ ЛР|Тема|Вариант|Решение|Отчет|
 |:---:|:---:|:---:|:---:|:---:|
 | <nobr> 1 </nobr> | <nobr> Сортировки за линейное время </nobr> | </nobr> 5-3: MD5-суммы - числа от 0 до 2^64 </nobr> | </nobr> [Решение](/lab1-radix-sort/main.cpp) </nobr> | </nobr> [Отчет](/reports/lab1/report.pdf) </nobr> |
 | <nobr> 2 </nobr> | <nobr> Сбалансированные деревья </nobr> | </nobr> 3: PATRICIA </nobr> | </nobr> [Решение](/lab2-patricia/solution.cpp) </nobr> | </nobr> [Отчет](/reports/lab2/report.pdf) </nobr> |
