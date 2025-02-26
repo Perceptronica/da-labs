@@ -1,0 +1,32 @@
+ 
+\section{Тест производительности}
+
+Тест производительности представляет из себя следующее: сравнение написанного мной алгоритма за $O(n)$ и наивного алгоритма за $O(n^3)$.
+
+\begin{alltt}
+	[anton@home lab7-dp]$ make
+	g++ main.cpp -o main
+	g++ naive.cpp -o naive
+	
+	...
+	
+	./main <tests/1.in
+	Suffix tree time 0.178 ms
+	./naive <tests/1.in
+	Naive time 0.116 ms
+	./main <tests/2.in
+	Suffix tree time 1.680 ms
+	./naive <tests/2.in
+	Naive time 3.180 ms
+	./main <tests/3.in
+	Suffix tree time 17.795 ms
+	./naive <tests/3.in
+	Naive time 81.510 ms
+	./main <tests/4.in
+	Suffix tree time 18.455 ms
+	./naive <tests/4.in
+	Naive time 1334.365 ms
+\end{alltt}
+
+Видно, что построение суффиксного дерева по алгоритму Укконена и дальнейший поиск по нему выигрывают у наивного алгоритма.
+\pagebreak

@@ -1,0 +1,127 @@
+\section{Описание}
+Требуется реализовать преобразование Фурье, применимое к действительному сигналу, на C++.
+
+Аудиосигнал декодируется из файла, после чего к нему применяется скользящее окно с последующим преобразованием Фурье. Это позволяет получить частотный спектр сигнала в каждый момент времени.
+
+Аудиофайл в формате .mp3 декодируется в массив отсчётов (сэмплов) с помощью библиотеки minimp3.
+
+Полученные отсчёты представляют собой временной ряд, который описывает амплитуду звукового сигнала в каждый момент времени.
+
+Перед применением FFT используется оконная функция Ханна (Hann window). Это необходимо для уменьшения эффектов, связанных с разрывами на границах окна (спектральные утечки).
+
+Окно — это функция, которая применяется к отрезку сигнала (обычно фиксированного размера) перед выполнением каких-либо операций. Оно "вырезает" \ часть сигнала, и его значение постепенно уменьшается к краям этого отрезка.
+
+Окно Ханна задается формулой: $\omega(n) = \frac{1}{2} (1 - cos(\frac{2\pi n}{N - 1}))$, где $N$ - ширина окна, $n$ - индекс отсчета в окне. Сложность - $O(N)$.
+
+Далее приведена реализация итеративного быстрого преобразования Фурье, состоящего из бит-реверсной перестановки и алгоритма Кули-Тьюки (с "бабочками").
+
+Отличие рекурсивного и итеративного алгоритма заключается в том, что можно расположить элементы вектора таким же образом, как они лежат в листьях, когда происходят вызовы рекурсивного алгоритма (то есть применить восходящий подход).
+
+Далее реализован основной цикл БПФ - вычисления спектра с использованием "бабочек" - операций умножения на поворотный множитель и сложения и вычитания результатов, что ускоряет работу преобразования Фурье с $O(n^2)$ до $O(nlogn)$. 
+
+\begin{lstlisting}[language=C++]
+	#include <bits/stdc++.h>
+	#include <cmath>
+	#include <iomanip>
+	
+	#define MINIMP3_IMPLEMENTATION
+	
+	#include "minimp3.h"
+	#include "minimp3_ex.h"
+	
+	std::vector<short> decoder() {
+		mp3dec_t mp3d;
+		mp3dec_file_info_t info;
+		if (mp3dec_load(&mp3d, "input.mp3", &info, NULL, NULL)) {
+			throw std::runtime_error("Decode error");
+		}
+		std::vector<short> res(info.buffer, info.buffer + info.samples);
+		free(info.buffer);
+		return res;
+	}
+	
+	std::vector<double> HannWindow(size_t sz) {
+		std::vector<double> res(sz);
+		for (size_t i = 0; i < sz; ++i) {
+			res[i] = 0.5 * (1 - cos((2 * M_PI * static_cast<int>(i)) / (sz - 1)));
+		}
+		return res;
+	}
+	
+	void FFT(std::vector<std::complex<double>> &A) {
+		size_t n = A.size();
+		size_t k = std::log2(n);
+		for (size_t i = 0, j = 0; i < n; ++i) {
+			if (i < j) {
+				std::swap(A[i], A[j]);
+			}
+			int bit = n >> 1;
+			while (j & bit) {
+				j ^= bit;
+				bit >>= 1;
+			}
+			j ^= bit;
+		}
+		for (uint64_t s = 1; s <= k; ++s) {
+			uint64_t m = 1 << s; // 2^s
+			std::complex<double> w_m = std::polar(1.0, -2 * M_PI / m);
+			for (uint64_t k = 0; k < n; k += m) {
+				std::complex<double> w = 1;
+				for (uint64_t j = 0; j < m / 2; ++j) {
+					std::complex<double> t = w * A[k + j + m / 2];
+					std::complex<double> u = A[k + j];
+					A[k + j] = u + t;
+					A[k + j + m / 2] = u - t;
+					w = w * w_m;
+				}
+			}
+		}
+	}
+	
+	int main() {
+		std::ios_base::sync_with_stdio(false);
+		std::cin.tie(nullptr);
+		
+		std::vector<short> data = decoder();
+		std::size_t win_size = 4096;
+		std::size_t step = 1024;
+		std::size_t data_size = data.size();
+		std::vector<double> hw = HannWindow(win_size);
+		
+		for (uint64_t i = 0; i < data_size - win_size; i += step) {
+			std::vector<std::complex<double>> a(win_size);
+			for (std::size_t j = 0; j < win_size; ++j) {
+				a[j] = data[i + j] * hw[j];
+			}
+			FFT(a);
+			double m = 0.0;
+			for (auto& num : a) {
+				m = std::max(m, std::abs(num));
+			}
+			std::cout << std::fixed << std::setprecision(20) << m << "\n";
+		}
+	}
+	
+\end{lstlisting}
+
+
+\pagebreak
+
+\section{Консоль}
+\begin{alltt}
+	[anton@home course-project-FFT]$ make
+	g++ -O2 -lm -fno-stack-limit -std=c++20 -x c++ solution.cpp -o executable
+	[anton@home course-project-FFT]$ make run
+	./executable
+	3921998.10862647509202361107
+	...
+	693186.10425133584067225456
+	731588.49480241292621940374
+	824537.12289667304139584303
+	828717.86826125031802803278
+	786364.83582654455676674843
+	742972.69324237504042685032
+	727028.89100579195655882359
+	
+\end{alltt}
+\pagebreak
